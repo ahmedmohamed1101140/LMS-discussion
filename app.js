@@ -9,7 +9,7 @@ var express        = require("express"),
     Comment        = require("./models/comment"),
     User           = require("./models/user");
 
-
+//george was here
 // requiring routes
 var commentRoutes    = require("./routes/comments"),
     postRoutes = require("./routes/posts"),
