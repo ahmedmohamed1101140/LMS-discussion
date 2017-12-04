@@ -1,25 +1,19 @@
-
-<!-- Wrapper required for sidebar transitions -->
-<div class="st-container">
-
-    <!-- Fixed navbar -->
-    <div class="navbar navbar-size-large navbar-default navbar-fixed-top" role="navigation">
-        <div class="container-fluid">
-
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="main-nav">
-                <ul class="nav navbar-nav navbar-nav-bordered navbar-right">
-                    <!-- User -->
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle user" data-toggle="dropdown">
-                            <img src="http://learning.aws.ipv4.ro/html/images/people/110/guy-5.jpg" alt="Bill" class="img-circle" width="40"/>
-                            Bill <span class="caret"></span>
-                        </a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a href="http://learning.aws.ipv4.ro/html/login.html">Logout</a></li>
-                        </ul>
-                    </li>
-                </ul>
-            </div><!-- /.navbar-collapse -->
+<nav class="navbar navbar-default">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/">LMS Board</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <% if (!currentUser) { %>
+                <li><a href="/login">Login</a></li>
+                <li><a href="/register">Sign Up</a></li>
+                <% } else { %>
+                <li><img src="<%= currentUser.image%>" width="40px" height="40px" class="img-circle" alt="Cinque Terre"></li>
+                <li><a href="#"><strong><%= currentUser.username %></strong></a></li>
+                <li><a href="/logout">Logout</a></li>
+                <% } %>
+            </ul>
         </div>
     </div>
+</nav>

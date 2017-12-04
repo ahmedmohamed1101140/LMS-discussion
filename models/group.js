@@ -7,15 +7,8 @@ var groupSchema = new mongoose.Schema({
     members: {type: Number, default: 0},
     post_num: {type: Number, default: 0},
     created: {type: Date , default: Date.now()},
+    adminName: String ,
     creator: {
-        id: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "User"
-        },
-        username: String,
-        userimage: String
-    },
-    admin: {
         id: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User"
@@ -37,6 +30,7 @@ var groupSchema = new mongoose.Schema({
         username: String,
         userstatus: Number
         // if we add the data we can know when the user register to this group
+        // 0 not allow 1 allowed
     }
 });
 

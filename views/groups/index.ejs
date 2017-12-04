@@ -1,0 +1,37 @@
+<% include ../partials/header%>
+
+<div class="container">
+    <header class="jumbotron">
+        <div class="jumbotron">
+            <h1>Welcome To Ain Shams Discussion Board</h1>
+            <p>Forget About FaceBook and let's Talk here with your Instructors</p>
+            <% if (currentUser) { %>
+            <% if (currentUser.usertype === 0) { %>
+            <p>
+                <a class="btn btn-primary btn-large" href="/groups/new">Add new Group</a>
+            </p>
+            <% } %>
+            <% } %>
+        </div>
+    </header>
+
+    <div class="row text-center" style="display:flex; flex-wrap: wrap;">
+        <%groups.forEach(function (group) {%>
+        <div class="col-md-3 col-sm-6">
+            <div class="thumbnail">
+                <img src="<%= group.image%>" class="img-thumbnail" alt="Image" width="304" height="236">
+                <div class="caption">
+                    <h4><%= group.name%></h4>
+                </div>
+                <p>Admined By <a href="#"><%=group.adminName%></a></p>
+                <p>
+                    <a href="/groups/<%= group._id %>" class="btn btn-lg btn-success">Join Group</a>
+                </p>
+            </div>
+        </div>
+        <% }); %>
+    </div>
+
+</div>
+
+<% include ../partials/footer %>
