@@ -11,7 +11,6 @@ var express        = require("express"),
     Comment        = require("./models/comment"),
     User           = require("./models/user");
 
-// requiring routes
 var commentRoutes    = require("./routes/comments"),
     postRoutes = require("./routes/posts"),
     groupRoutes = require("./routes/groups"),
