@@ -6,7 +6,7 @@
             <h1>Welcome To Ain Shams Discussion Board</h1>
             <p>Forget About FaceBook and let's Talk here with your Instructors</p>
             <% if (currentUser) { %>
-            <% if (currentUser.usertype === 0) { %>
+            <% if (currentUser.usertype <= 1) { %>
             <p>
                 <a class="btn btn-primary btn-large" href="/groups/new">Add new Group</a>
             </p>
@@ -23,9 +23,17 @@
                 <div class="caption">
                     <h4><%= group.name%></h4>
                 </div>
-                <p>Admined By <a href="#"><%=group.adminName%></a></p>
+                <p>Admined By <a href="#"><%=group.admin.username%></a></p>
                 <p>
-                    <a href="/groups/<%= group._id %>" class="btn btn-lg btn-success">Join Group</a>
+                    <a href="/groups/<%= group._id %>/edit" class="btn btn-lg btn-primary">Visit Group</a>
+                    <br>
+                    <a href="/groups/request/<%= group._id %>" type="submit" class="btn btn-lg btn-success">Join Group</a>
+                    <br>
+                    <a href="/groups/<%= group._id %>/edit" class="btn btn-lg btn-warning">Edit Group</a>
+                    <form id="delete-form" action="/groups/<%= group._id%>?_method=DELETE" method="POST">
+                        <button class="btn btn-lg btn-danger">Delete</button>
+                    </form>
+
                 </p>
             </div>
         </div>

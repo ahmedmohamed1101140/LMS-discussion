@@ -13,19 +13,11 @@
                     <input class="form-control" type="text" name="image" placeholder="image url">
                 </div>
                 <div class="form-group">
-                    <label for="sel1">Select Admin Of the Group:</label>
-                    <select class="form-control" name="sel1">
-                        <%users.forEach(function (user) {%>
-                        <option id="<%user._id%>"><%= user.username%></option>
-                        <% }); %>
-                    </select>
-                </div>
-                <div class="form-group">
                     <button type="submit" class="btn btn-lg btn-primary btn-block">Submit</button>
                 </div>
             </form>
 
-            <a href="/campgrounds">Go back to view campgrounds</a>
+            <a href="/groups">Go back to view campgrounds</a>
         </div>
     </div>
 </div>

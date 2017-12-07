@@ -4,11 +4,10 @@ var mongoose = require("mongoose");
 var groupSchema = new mongoose.Schema({
     name: {type: String, unique: true},
     image: {type: String , default: "https://d30zbujsp7ao6j.cloudfront.net/wp-content/uploads/2017/07/unnamed.png"},
-    members: {type: Number, default: 0},
+    members: {type: Number, default: 1},
     post_num: {type: Number, default: 0},
     created: {type: Date , default: Date.now()},
-    adminName: String ,
-    creator: {
+    admin: {
         id: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User"
@@ -22,17 +21,23 @@ var groupSchema = new mongoose.Schema({
             ref: "Post"
         }
     ],
-    users: {
+    users: [{
         id: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User"
         },
         username: String,
-        userstatus: Number
+        userstatus: Number,
+        register: {type: Date , default: Date.now()}
         // if we add the data we can know when the user register to this group
         // 0 not allow 1 allowed
-    }
+    }]
 });
+
+groupSchema.pre("remove",function (next) {
+    
+});
+
 
 // create groups model using the schema and export it
 module.exports = mongoose.model("Group", groupSchema);

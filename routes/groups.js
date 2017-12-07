@@ -1,7 +1,9 @@
 var express    = require("express");
 var router     = express.Router({mergeParams: true});
-var Group = require("../models/group");
-var User = require("../models/user");
+var Group      = require("../models/group");
+var User       = require("../models/user");
+var Post       = require("../models/post");
+var Comments   = require("../models/comment");
 var middleware = require("../middleware");
 
 // INDEX -- view all Group, GET route
@@ -18,14 +20,7 @@ router.get("/", function (req, res) {
 
 // NEW -- new Group form, GET route
 router.get("/new", middleware.isAdmin, function (req, res) {
-    User.find({usertype:1},function (err,allUsers) {
-       if(err){
-           console.log(err);
-       }
-       else{
-           res.render("groups/new" , {users: allUsers});
-       }
-    });
+    res.render("groups/new");
 });
 
 // CREATE -- create new Group, POST route
@@ -33,32 +28,30 @@ router.post("/", middleware.isAdmin, function (req, res) {
     // get data from the form
     var name = req.body.name;
     var image = req.body.image;
-    var creator = {
+    var admin = {
         id: req.user._id,
         username: req.user.username,
         userimage: req.user.image
     };
-
-    var newGroup = {name: name, image: image, adminName: req.body.sel1 , creator: creator};
-    // create a new Group and save it to the Database
-    Group.create(newGroup, function (err, newlyCreated) {
-        if (err) {
+    var newGroup = {name: name, image: image , admin: admin };
+    // // create a new Group and save it to the Database
+    Group.create(newGroup,function (err,newlyCreated) {
+        if(err){
             console.log(err);
-        } else {
-            console.log(newlyCreated);
-            // redirect to the Groups route
-
-            //add this group to the admin and the creator
-            var creator = User.findById(req.user._id);
-            creator.groups.push(newlyCreated);
-            creator.save();
-            console.log(creator);
-            User.find({username:req.body.sel1},function (err,foundAdmin) {
-                foundAdmin.groups.push(newlyCreated);
-                foundAdmin.save();
-                console.log(foundAdmin);
+            req.flash("error","Group Name Exist..");
+            res.redirect("back");
+        }
+        else{
+            User.findById(req.user._id,function (err,foundUser) {
+                if(err){
+                    console.log(err);
+                }
+                else
+                {
+                    foundUser.groups.push(newlyCreated);
+                    foundUser.save();
+                }
             });
-
             req.flash("success", "Your Group "+ newlyCreated.name +" Added Successfully");
             res.redirect("/groups");
         }
@@ -68,11 +61,11 @@ router.post("/", middleware.isAdmin, function (req, res) {
 // SHOW -- display info about a specific Group, GET route
 router.get("/:id", middleware.isAllowed , function (req, res) {
     // find the Group with provided ID
+    console.log("show Function");
     Group.findById(req.params.id).populate("posts").exec(function (err, foundGroup) {
         if (err) {
             console.log(err);
         } else {
-            console.log(foundGroup);
             // render the show template with the foundGroup
             res.render("groups/show", {group: foundGroup});
         }
@@ -80,7 +73,7 @@ router.get("/:id", middleware.isAllowed , function (req, res) {
 });
 
 // EDIT Group route
-router.get("/:id/edit", middleware.checkGroupOwnership, function(req, res) {
+router.get("/:id/edit", middleware.isGroupOwner, function(req, res) {
     // find the Group with the requested id
     Group.findById(req.params.id, function (err, foundGroup) {
         if (err)
@@ -91,69 +84,60 @@ router.get("/:id/edit", middleware.checkGroupOwnership, function(req, res) {
 });
 
 // UPDATE Group route
-router.put("/:id", middleware.checkGroupOwnership, function(req, res) {
+router.put("/:id", middleware.isGroupOwner, function(req, res) {
     // find and update the correct group
     var name = req.body.name;
     var image = req.body.image;
-    var creator = {
-        id: req.user._id,
-        username: req.user.username,
-        userimage: req.user.image
-    };
-    User.findById(req.admin_id,function (err,admin_data) {
-        var admin = {
-            id: req.admin_id,
-            username: admin_data.username,
-            userimage: admin_data.userimage
-        };
-        var newGroup = {name: name, image: image, admin: admin, creator: creator};
 
-        Group.findByIdAndUpdate(req.params.id, newGroup, function(err, updatedGroup) {
-            // redirect to Groups page or page with specific id
-            if (err) {
-                res.redirect("/groups");
-            } else {
-                res.redirect("/groups/" + req.params.id);
-            }
-        });
+    var newGroup = {name: name, image: image};
+
+    Group.findByIdAndUpdate(req.params.id, newGroup, function(err, updatedGroup) {
+        // redirect to Groups page or page with specific id
+        if (err) {
+            console.log(err);
+            req.flash("error","Error Happens While Update.. :(");
+            res.redirect("/groups");
+        } else {
+            req.flash("success","Your "+updatedGroup.name+" Updated Successfully..");
+            res.redirect("/groups/" + req.params.id);
+        }
     });
-
 });
 
 // DESTROY Groups route
-router.delete("/:id", middleware.isAdmin, function(req, res) {
-    // delete a group with given id and redirect to groups page
+router.delete("/:id", middleware.isGroupOwner,middleware.deleteAssociations, function(req, res) {
+    //Now Delete The Group Safely
     Group.findByIdAndRemove(req.params.id, function(err) {
         if (err) {
             res.redirect("/groups");
         } else {
-            req.flash("success","Group Deleted!")
+            req.flash("success","Group Deleted!");
             res.redirect("/groups");
         }
     });
 });
 
-router.post("/:id/request",middleware.checkStatus,function (req,res) {
-
+//USER Send Request to Join Group
+router.get("/request/:id",middleware.checkStatus,function (req,res) {
     //find the group that the user want to join by the group id
-   Group.findById(req.params.id,function(err,foundGroup){
-      var user = {
-          id: req.user._id,
-          username: req.user.username,
-          userstatus: 0
-      };
-      //push the user to the group but don't allow him
-      foundGroup.users.push(user);
-      foundGroup.save();
+    Group.findById(req.params.id,function(err,foundGroup){
+       var user = {
+           id: req.user._id,
+           username: req.user.username,
+           userstatus: 0
+       };
+       //push the user to the group but don't allow him
+       foundGroup.users.push(user);
+       foundGroup.save();
 
-       // redirect to the SHOW router
-       req.flash("success", "Request Sent!");
-       res.redirect("/groups");
-   });
-});
+        // redirect to the SHOW router
+        req.flash("success", "Request Sent!");
+        res.redirect("/groups");
+    });
+});// WORKED
 
-// form the form i will send to id user id and group id to accept the user
-router.post("/:group_id/user/:user_id",middleware.checkGroupOwnership,function (req,res) {
+// Accept USER Joining Request
+router.post("/:group_id/user/:user_id",middleware.isGroupOwner,function (req,res) {
     Group.findById(req.params.group_id,function (err,foundGroup) {
         var user = foundGroup.user.findById(req.params.user_id);
         user.userstatus = 1;
@@ -179,7 +163,8 @@ router.post("/:group_id/user/:user_id",middleware.checkGroupOwnership,function (
     });
 });
 
-router.get("/:id/requests",middleware.checkGroupOwnership,function (req,res) {
+// Display All Group Requests
+router.get("/:id/requests",/*middleware.checkGroupOwnership,*/function (req,res) {
     Group.findById(req.params.id).populate("users").exec(function (err, foundGroup) {
         if (err) {
             console.log(err);

@@ -6,10 +6,12 @@ var express        = require("express"),
     flash          = require("connect-flash"),
     passport       = require("passport"),
     LocalStrategy  = require("passport-local"),
+    methodOverride = require("method-override"),
     Group          = require("./models/group"),
     Post           = require("./models/post"),
     Comment        = require("./models/comment"),
-    User           = require("./models/user");
+    User           = require("./models/user"),
+    seedDB         = require("./seeds");
 
 var commentRoutes    = require("./routes/comments"),
     postRoutes = require("./routes/posts"),
@@ -24,6 +26,8 @@ app.use(bodyParser.urlencoded({extended: true}));
 // set up the ejs view engine
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + "/public"));
+// set up method override
+app.use(methodOverride("_method"));
 // set up connect-flash
 app.use(flash());
 
@@ -47,11 +51,15 @@ app.use(function (req, res, next) {
     next();
 });
 
+// seedBD for testing
+// seedDB();
+
+
 //set up routes
 app.use("/", indexRoutes);
 app.use("/groups", groupRoutes);
-// app.use("/posts", postRoutes);
-// app.use("/posts/:id/comments", commentRoutes);
+// app.use("/groups/:id/posts", postRoutes);
+// app.use("/groups/:id/posts/:id/comments", commentRoutes);
 
 // set up the server
 app.listen("3000", process.env.IP, function () {
