@@ -182,6 +182,7 @@ middlewareObj.deleteAssociations = function (req,res,next) {
 
 module.exports = middlewareObj;
 
+// function to delete group from user `
 function deleteGroupFromUser(id,req) {
     console.log("here is the ID "+id);
     User.findById(id,function (err,foundUser) {

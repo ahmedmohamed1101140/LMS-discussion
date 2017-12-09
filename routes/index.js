@@ -21,6 +21,23 @@ router.get("/register", function(req, res) {
     res.render("register");
 });
 
+// RENDER user profile page
+router.get("/profile",function (req, res) {
+    User.findById(req.user._id).populate("groups").exec(function (err,founduser) {
+       if(err){
+           console.log(err);
+       }
+       else {
+           res.render("GUItest/profile",{currentUser:founduser});;
+       }
+    });
+});
+
+// UPDATE User DAta
+router.put("/profile",function (req, res) {
+
+});
+
 // handle sign up logic
 router.post("/register", function(req, res) {
     router// register an user from given request body

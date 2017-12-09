@@ -7,21 +7,53 @@ var Comments   = require("../models/comment");
 var middleware = require("../middleware");
 
 // INDEX -- view all Group, GET route
-router.get("/", function (req, res) {
+router.get("/",middleware.isLoggedIn, function (req, res) {
     // get all Groups data from Datebase
     Group.find({}, function (err, allGroups) {
         if (err) {
             console.log(err);
         } else {
-            res.render("groups/index", {groups: allGroups, currentUser: req.user});
+            User.findById(req.user._id).populate("groups").exec(function (err,founduser) {
+               if(err){
+                   console.log(err);
+               }
+               else {
+                   // res.render("groups/index", {groups: allGroups, currentUser: founduser});
+                   res.render("GUItest/index", {groups: allGroups, currentUser: founduser});
+               }
+            });
         }
     });
-}); //worked
+}); //WORKED
+
+// INDEX -- view all Group, GET route
+router.get("/mygroups",middleware.isLoggedIn, function (req, res) {
+    // get all Groups data from Datebase
+    User.findById(req.user._id).populate("groups").exec(function (err,foundUser) {
+       if(err){
+           console.log(err);
+       }
+       else {
+           // res.render("groups/mygroups",{user: foundUser});
+           res.render("GUItest/mygroups",{user:foundUser});
+       }
+    });
+}); //WORKED
 
 // NEW -- new Group form, GET route
 router.get("/new", middleware.isAdmin, function (req, res) {
-    res.render("groups/new");
-});
+    // res.render("groups/new");
+    User.findById(req.user._id).populate("groups").exec(function (err,foundUser) {
+       if(err){
+           console.log(err);
+       }
+       else {
+           console.log(foundUser);
+           res.render("GUItest/new",{user:foundUser});
+
+       }
+    });
+}); //WORKED
 
 // CREATE -- create new Group, POST route
 router.post("/", middleware.isAdmin, function (req, res) {
@@ -33,8 +65,8 @@ router.post("/", middleware.isAdmin, function (req, res) {
         username: req.user.username,
         userimage: req.user.image
     };
+    // create a new Group and save it to the Database
     var newGroup = {name: name, image: image , admin: admin };
-    // // create a new Group and save it to the Database
     Group.create(newGroup,function (err,newlyCreated) {
         if(err){
             console.log(err);
@@ -42,6 +74,7 @@ router.post("/", middleware.isAdmin, function (req, res) {
             res.redirect("back");
         }
         else{
+            //add the created group to the user
             User.findById(req.user._id,function (err,foundUser) {
                 if(err){
                     console.log(err);
@@ -56,7 +89,7 @@ router.post("/", middleware.isAdmin, function (req, res) {
             res.redirect("/groups");
         }
     });
-});
+}); //WORKED
 
 // SHOW -- display info about a specific Group, GET route
 router.get("/:id", middleware.isAllowed , function (req, res) {
@@ -70,9 +103,9 @@ router.get("/:id", middleware.isAllowed , function (req, res) {
             res.render("groups/show", {group: foundGroup});
         }
     });
-});
+}); //WORKED
 
-// EDIT Group route
+// EDIT -- Display Edit Form With Group Exist Data
 router.get("/:id/edit", middleware.isGroupOwner, function(req, res) {
     // find the Group with the requested id
     Group.findById(req.params.id, function (err, foundGroup) {
@@ -81,9 +114,9 @@ router.get("/:id/edit", middleware.isGroupOwner, function(req, res) {
         // parse foundGroup to the edit template and render it
         res.render("groups/edit", {group: foundGroup});
     });
-});
+}); //WORKED
 
-// UPDATE Group route
+// UPDATE -- Update The Group Data
 router.put("/:id", middleware.isGroupOwner, function(req, res) {
     // find and update the correct group
     var name = req.body.name;
@@ -102,9 +135,9 @@ router.put("/:id", middleware.isGroupOwner, function(req, res) {
             res.redirect("/groups/" + req.params.id);
         }
     });
-});
+}); //WORKED
 
-// DESTROY Groups route
+// DESTROY -- Delete the Group Information and all posts and comment associated with the group and delete it form all registered users
 router.delete("/:id", middleware.isGroupOwner,middleware.deleteAssociations, function(req, res) {
     //Now Delete The Group Safely
     Group.findByIdAndRemove(req.params.id, function(err) {
@@ -115,7 +148,7 @@ router.delete("/:id", middleware.isGroupOwner,middleware.deleteAssociations, fun
             res.redirect("/groups");
         }
     });
-});
+}); //WORKED
 
 //USER Send Request to Join Group
 router.get("/request/:id",middleware.checkStatus,function (req,res) {
@@ -129,7 +162,6 @@ router.get("/request/:id",middleware.checkStatus,function (req,res) {
        //push the user to the group but don't allow him
        foundGroup.users.push(user);
        foundGroup.save();
-
         // redirect to the SHOW router
         req.flash("success", "Request Sent!");
         res.redirect("/groups");
@@ -147,6 +179,7 @@ router.post("/:group_id/user/:user_id",middleware.isGroupOwner,function (req,res
                res.redirect("back");
            } else {
                // redirect to the show page for the campsite
+               foundGroup.members++;
                foundGroup.save();
                User.findById(req.params.user_id,function (err,foundUser) {
                    var group = {
@@ -164,7 +197,7 @@ router.post("/:group_id/user/:user_id",middleware.isGroupOwner,function (req,res
 });
 
 // Display All Group Requests
-router.get("/:id/requests",/*middleware.checkGroupOwnership,*/function (req,res) {
+router.get("/:id/requests",middleware.isGroupOwner,function (req,res) {
     Group.findById(req.params.id).populate("users").exec(function (err, foundGroup) {
         if (err) {
             console.log(err);

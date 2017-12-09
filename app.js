@@ -14,9 +14,10 @@ var express        = require("express"),
     seedDB         = require("./seeds");
 
 var commentRoutes    = require("./routes/comments"),
-    postRoutes = require("./routes/posts"),
-    groupRoutes = require("./routes/groups"),
+    postRoutes       = require("./routes/posts"),
+    groupRoutes      = require("./routes/groups"),
     indexRoutes      = require('./routes/index');
+
 
 // set up the mongodb
 mongoose.connect("mongodb://localhost/discussion_app");
