@@ -5,6 +5,7 @@ var User  = require("../models/user");
 var middleware = require("../middleware");
 
 
+
 // default route
 router.get("/", function (req, res) {
     res.render("landing");
@@ -21,22 +22,6 @@ router.get("/register", function(req, res) {
     res.render("register");
 });
 
-// RENDER user profile page
-router.get("/profile",function (req, res) {
-    User.findById(req.user._id).populate("groups").exec(function (err,founduser) {
-       if(err){
-           console.log(err);
-       }
-       else {
-           res.render("GUItest/profile",{currentUser:founduser});;
-       }
-    });
-});
-
-// UPDATE User DAta
-router.put("/profile",function (req, res) {
-
-});
 
 // handle sign up logic
 router.post("/register", function(req, res) {
@@ -54,28 +39,51 @@ router.post("/register", function(req, res) {
         passport.authenticate("local")(req, res, function () {
             // display the welcome flash notification and redirect
             req.flash("success", "Welcome to Our Discussion Board " + user.username);
-            res.redirect("/groups");
+            res.redirect("/profile");
         });
     });
 });
 
-//
-// router.get("/registeration/:id",function (req,res) {
-//     res.send("add email and edit image and choose your type  "+req.params.id);
-// });
+// RENDER user profile page
+router.get("/profile",middleware.isLoggedIn,function (req, res) {
+    User.findById(req.user._id).populate("groups").exec(function (err,founduser) {
+        if(err){
+            console.log(err);
+        }
+        else {
+            res.render("GUItest/profile",{currentUser:founduser});
+        }
+    });
+});
 
-// router.post("/registeration/:id",function (req,res) {
-//    //add users data
-//     User.findByIdAndUpdate(req.params.id, req.body.user, function(err, updatedUser) {
-//         // redirect to campground page or page with specific id
-//         if (err) {
-//             res.send(err);
-//         } else {
-//             res.redirect("/home",{user:updatedUser});
-//         }
-//     });
-// });
+// UPDATE User DAta
+router.post("/profile",middleware.isLoggedIn,function (req, res) {
+    var user={
+        firstname : req.body.firstname,
+        lastname  : req.body.lastname,
+        email     : req.body.email
+    };
+    User.findByIdAndUpdate(req.user._id,user,function(err,updatedUser){
+        if(err){
+            console.log(err);
+        }
+        else {
+            console.log(user);
+            console.log(updatedUser);
+            req.flash("success","You Profile Updated Successfully");
+            res.redirect("/groups");
+        }
+    });
+});
 
+router.get("/iwanttobeanadmin",middleware.isLoggedIn,function (req,res) {
+    User.findById(req.user._id,function (err,founduser) {
+       founduser.usertype = 1;
+       founduser.save();
+       req.flash("success","Congratulation "+founduser.username+" You Now Is an Admin");
+       res.redirect("/groups");
+    });
+});
 // show login form
 router.get("/login", function(req, res) {
     res.render("login");

@@ -117,7 +117,7 @@
                     <!-- user -->
                     <li class="dropdown user">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <img src="<%= currentUser.image%>" alt="" class="img-circle"/> <strong><%= currentUser.username %></strong><span class="caret"></span>
+                            <img src="<%= currentUser.image%>" alt="" class="img-circle"/> <strong><%= currentUser.firstname%></strong><span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu" role="menu">
                             <li><a href="/groups"><i class="fa fa-bar-chart-o"></i> Dashboard</a></li>
@@ -139,7 +139,7 @@
                 <a href="#"><img src="<%=currentUser.image%>" alt="people" class="img-circle width-80"/></a>
             </div>
             <div class="media-body">
-                <h1 class="text-white text-display-1 margin-v-0"><%=currentUser.username%></h1>
+                <h1 class="text-white text-display-1 margin-v-0"><%=currentUser.firstname%> <%=currentUser.lastname%></h1>
                 <p class="text-subhead"><a class="link-white text-underline" href="/profile">View public profile</a></p>
             </div>
             <div class="media-right">
@@ -197,10 +197,6 @@
                                     <input type="text" name="name" placeholder="group Title" class="form-control used"/>
                                     <label for="title">Title</label>
                                 </div>
-                                <div class="form-group form-control-material">
-                                    <input type="text" name="image" placeholder="Group image" class="form-control used"/>
-                                    <label for="image">Group Image</label>
-                                </div>
                                 <div class="text-right">
                                     <input type="submit" class="btn btn-primary"></input>
                                 </div>
@@ -221,10 +217,10 @@
                     <div class="panel-body list-group">
                         <ul class="list-group">
                             <%user.groups.forEach(function (group) {%>
-                            <li class="list-group-item">
-                                <span class="badge pull-right"><%=group.post_num%></span>
-                                <a class="list-group-link" href="/groups/<%= group._id %>"><%=group.name%></a>
-                            </li>
+                                <li class="list-group-item">
+                                    <span class="badge pull-right"><%=group.post_num%></span>
+                                    <a class="list-group-link" href="/groups/<%= group._id %>"><%=group.name%></a>
+                                </li>
                             <% }); %>
                         </ul>
                     </div>

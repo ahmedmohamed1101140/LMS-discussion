@@ -121,7 +121,7 @@
                     <!-- user -->
                     <li class="dropdown user">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <img src="<%= currentUser.image%>" alt="" class="img-circle"/> <strong><%= currentUser.username %></strong><span class="caret"></span>
+                            <img src="<%= currentUser.image%>" alt="" class="img-circle"/> <strong><%= currentUser.firstname %></strong><span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu" role="menu">
                             <li><a href="/groups"><i class="fa fa-bar-chart-o"></i> Dashboard</a></li>
@@ -137,21 +137,21 @@
     </div>
 </div>
 
-<div class="parallax overflow-hidden bg-white page-section third">
+<div class="parallax overflow-hidden bg-blue-400 page-section third">
     <div class="container parallax-layer" data-opacity="true">
         <div class="media v-middle">
             <div class="media-left text-center">
                 <a href="#"><img src="<%=currentUser.image%>" alt="people" class="img-circle width-80"/></a>
             </div>
             <div class="media-body">
-                <h1 class="text-white text-display-1 margin-v-0"><%=currentUser.username%></h1>
-                <p class="text-subhead"><a class="link-blue text-underline" href="/profile">View public profile</a></p>
+                <h1 class="text-white text-display-1 margin-v-0"><%=currentUser.firstname%> <%=currentUser.lastname%></h1>
+                <p class="text-subhead"><a class="link-white text-underline" href="/profile">View public profile</a></p>
             </div>
             <div class="media-right">
                 <% if (currentUser.usertype <= 1) { %>
-                <span class="label"><h4>Instructor</h4></span>
+                <span class="label bg-blue-500">Instructor</span>
                 <% } else{ %>
-                <span class="label"><h4>Student</h4></span>
+                <span class="label bg-blue-500">Student</span>
                 <%}%>
             </div>
         </div>
@@ -181,28 +181,20 @@
 
                     <!-- Tabs -->
                     <ul class="nav nav-tabs">
-                        <li class="active"><a href="website-student-profile.html"><i class="fa fa-fw fa-lock"></i> <span class="hidden-sm hidden-xs">Manage Account</span></a></li>
-                        <li><a href="http://learning.aws.ipv4.ro/html/website-student-billing.html"><i class="fa fa-fw fa-credit-card"></i> <span class="hidden-sm hidden-xs">Billing Details</span></a></li>
+                        <li class="active"><a href="#"><i class="fa fa-fw fa-lock"></i> <span class="hidden-sm hidden-xs">Manage Account</span></a></li>
                     </ul>
                     <!-- // END Tabs -->
 
                     <!-- Panes -->
                     <div class="tab-content">
-
-
                         <div id="account" class="tab-pane active">
-                            <form class="form-horizontal">
+                            <form class="form-horizontal" action="/profile" method="POST">
                                 <div class="form-group">
-                                    <label for="inputEmail3" class="col-sm-2 control-label">Avatar</label>
+                                    <label for="photo" class="col-sm-2 control-label">Image</label>
                                     <div class="col-md-6">
                                         <div class="media v-middle">
                                             <div class="media-left">
-                                                <div class="icon-block width-100 bg-grey-100">
-                                                    <i class="fa fa-photo text-light"></i>
-                                                </div>
-                                            </div>
-                                            <div class="media-body">
-                                                <a href="#" class="btn btn-white btn-sm paper-shadow relative" data-z="0.5" data-hover-z="1" data-animated> Add Image<i class="fa fa-upl"></i></a>
+                                                <input type="file" class="btn btn-white btn-sm paper-shadow relative" data-z="0.5" data-hover-z="1" data-animated name="photo" >
                                             </div>
                                         </div>
                                     </div>
@@ -212,15 +204,15 @@
                                     <div class="col-md-8">
                                         <div class="row">
                                             <div class="col-md-6">
-                                                <div class="form-control-material">
-                                                    <input type="email" class="form-control" id="exampleInputFirstName" placeholder="Your first name">
-                                                    <label for="exampleInputFirstName">First name</label>
+                                                <div class="form-group form-control-material">
+                                                    <input required="true" type="text" name="firstname" placeholder="First Name" class="form-control used" value="<%=currentUser.firstname%>"/>
+                                                    <label for="firstname">First Name</label>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
-                                                <div class="form-control-material">
-                                                    <input type="email" class="form-control" id="exampleInputLastName" placeholder="Your last name">
-                                                    <label for="exampleInputLastName">Last name</label>
+                                                <div class="form-group form-control-material">
+                                                    <input type="text" required="true" name="lastname" placeholder="Last Name" class="form-control used" value="<%=currentUser.lastname%>"/>
+                                                    <label for="lastname">Last Name</label>
                                                 </div>
                                             </div>
                                         </div>
@@ -232,38 +224,9 @@
                                         <div class="form-control-material">
                                             <div class="input-group">
                                                 <span class="input-group-addon"><i class="fa fa-envelope"></i></span>
-                                                <input type="email" class="form-control" id="inputEmail3" placeholder="Email">
-                                                <label for="inputEmail3">Email address</label>
+                                                <input type="email" class="form-control used" required="true" name="email" placeholder="Email" value="<%=currentUser.email%>">
+                                                <label for="email">Email address</label>
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="inputEmail3" class="col-md-2 control-label">Website</label>
-                                    <div class="col-md-6">
-                                        <div class="form-control-material">
-                                            <div class="input-group">
-                                                <span class="input-group-addon"><i class="fa fa-link"></i></span>
-                                                <input type="text" class="form-control used" id="website" value="www.mosaicpro.biz">
-                                                <label for="website">Website</label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <label for="inputPassword3" class="col-md-2 control-label">Change Password</label>
-                                    <div class="col-md-6">
-                                        <div class="form-control-material">
-                                            <input type="password" class="form-control" id="inputPassword3" placeholder="Password">
-                                            <label for="inputPassword3">Password</label>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="col-md-offset-2 col-md-6">
-                                        <div class="checkbox checkbox-success">
-                                            <input id="checkbox3" type="checkbox" checked="">
-                                            <label for="checkbox3">Subscribe to our Newsletter</label>
                                         </div>
                                     </div>
                                 </div>

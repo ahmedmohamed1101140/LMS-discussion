@@ -27,8 +27,7 @@ var groupSchema = new mongoose.Schema({
             ref: "User"
         },
         username: String,
-        userstatus: Number,
-        register: {type: Date , default: Date.now()}
+        userstatus: Number
         // if we add the data we can know when the user register to this group
         // 0 not allow 1 allowed
     }]

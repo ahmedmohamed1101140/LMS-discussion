@@ -96,7 +96,7 @@
                     <!-- user -->
                     <li class="dropdown user">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <img src="<%= user.image%>" alt="" class="img-circle"/> <strong><%= user.username %></strong><span class="caret"></span>
+                            <img src="<%= user.image%>" alt="" class="img-circle"/> <strong><%= user.firstname %></strong><span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu" role="menu">
                             <li><a href="/groups"><i class="fa fa-bar-chart-o"></i> Dashboard</a></li>
@@ -118,7 +118,7 @@
                 <a href="#"><img src="<%=user.image%>" alt="people" class="img-circle width-80"/></a>
             </div>
             <div class="media-body">
-                <h1 class="text-white text-display-1 margin-v-0"><%=user.username%></h1>
+                <h1 class="text-white text-display-1 margin-v-0"><%=user.firstname%> <%=user.lastname%></h1>
                 <p class="text-subhead"><a class="link-blue text-underline" href="/profile">View public profile</a></p>
             </div>
             <div class="media-right">
@@ -192,7 +192,7 @@
                             </div>
                             <%if(group.admin.id.equals(currentUser._id)){%>
                             <div class="panel-body">
-                                <a class="btn btn-blue btn-flat paper-shadow relative btn-lg" data-z="0" data-hover-z="1" data-animated href="/groups/request/<%= group._id %>">
+                                <a class="btn btn-blue btn-flat paper-shadow relative btn-lg" data-z="0" data-hover-z="1" data-animated href="/groups/<%= group._id %>/edit">
                                     <i class="fa fa-fw fa-edit"></i>Edit Group
                                 </a>
                                 <form id="delete-form" action="/groups/<%= group._id%>?_method=DELETE" method="POST">
@@ -320,7 +320,6 @@
     </div>
 
 </div>
-
 <section class="footer-section">
     <div class="container">
         <div class="row">

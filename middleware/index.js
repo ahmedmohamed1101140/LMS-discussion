@@ -184,9 +184,7 @@ module.exports = middlewareObj;
 
 // function to delete group from user `
 function deleteGroupFromUser(id,req) {
-    console.log("here is the ID "+id);
     User.findById(id,function (err,foundUser) {
-        console.log(foundUser);
         foundUser.groups.pull(req.params.id);
         foundUser.save();
     });

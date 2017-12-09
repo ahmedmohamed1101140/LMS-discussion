@@ -59,14 +59,13 @@ router.get("/new", middleware.isAdmin, function (req, res) {
 router.post("/", middleware.isAdmin, function (req, res) {
     // get data from the form
     var name = req.body.name;
-    var image = req.body.image;
     var admin = {
         id: req.user._id,
         username: req.user.username,
         userimage: req.user.image
     };
     // create a new Group and save it to the Database
-    var newGroup = {name: name, image: image , admin: admin };
+    var newGroup = {name: name, admin: admin };
     Group.create(newGroup,function (err,newlyCreated) {
         if(err){
             console.log(err);
@@ -94,13 +93,13 @@ router.post("/", middleware.isAdmin, function (req, res) {
 // SHOW -- display info about a specific Group, GET route
 router.get("/:id", middleware.isAllowed , function (req, res) {
     // find the Group with provided ID
-    console.log("show Function");
     Group.findById(req.params.id).populate("posts").exec(function (err, foundGroup) {
         if (err) {
             console.log(err);
         } else {
             // render the show template with the foundGroup
-            res.render("groups/show", {group: foundGroup});
+            // res.render("groups/show", {group: foundGroup});
+            res.render("GUItest/show", {group: foundGroup});
         }
     });
 }); //WORKED
@@ -109,10 +108,20 @@ router.get("/:id", middleware.isAllowed , function (req, res) {
 router.get("/:id/edit", middleware.isGroupOwner, function(req, res) {
     // find the Group with the requested id
     Group.findById(req.params.id, function (err, foundGroup) {
-        if (err)
+        if (err) {
             console.log(err);
+        }
         // parse foundGroup to the edit template and render it
-        res.render("groups/edit", {group: foundGroup});
+        // res.render("groups/edit", {group: foundGroup});
+        User.findById(req.user._id).populate("groups").exec(function (err,foundUser) {
+            if(err){
+                console.log(err);
+            }
+            else {
+                res.render("GUItest/edit", {group: foundGroup,user:foundUser});
+
+            }
+        });
     });
 }); //WORKED
 
@@ -120,9 +129,8 @@ router.get("/:id/edit", middleware.isGroupOwner, function(req, res) {
 router.put("/:id", middleware.isGroupOwner, function(req, res) {
     // find and update the correct group
     var name = req.body.name;
-    var image = req.body.image;
 
-    var newGroup = {name: name, image: image};
+    var newGroup = {name: name};
 
     Group.findByIdAndUpdate(req.params.id, newGroup, function(err, updatedGroup) {
         // redirect to Groups page or page with specific id
@@ -132,7 +140,7 @@ router.put("/:id", middleware.isGroupOwner, function(req, res) {
             res.redirect("/groups");
         } else {
             req.flash("success","Your "+updatedGroup.name+" Updated Successfully..");
-            res.redirect("/groups/" + req.params.id);
+            res.redirect("/groups/mygroups");
         }
     });
 }); //WORKED
@@ -169,43 +177,31 @@ router.get("/request/:id",middleware.checkStatus,function (req,res) {
 });// WORKED
 
 // Accept USER Joining Request
-router.post("/:group_id/user/:user_id",middleware.isGroupOwner,function (req,res) {
+router.get("/:group_id/user/:user_id",middleware.isAdmin,function (req,res) {
     Group.findById(req.params.group_id,function (err,foundGroup) {
-        var user = foundGroup.user.findById(req.params.user_id);
-        user.userstatus = 1;
-        user.save();
-        foundGroup.users.findByIdAndUpdate(req.params.user_id,user,function (err,updatedUser) {
-           if (err) {
-               res.redirect("back");
-           } else {
-               // redirect to the show page for the campsite
-               foundGroup.members++;
-               foundGroup.save();
-               User.findById(req.params.user_id,function (err,foundUser) {
-                   var group = {
-                       id : req.params.group_id,
-                       groupname: foundGroup.name
-                   };
-                   foundUser.groups.push(group);
-                   foundUser.save();
-               });
-               req.flash("success", "user Successfully added!");
-               res.redirect("back");
-           }
-       });
+        foundGroup.users.forEach(function (user) {
+            if(user._id.equals(req.params.user_id)){
+                user.userstatus = 1;
+                user.save();
+                console.log(user);
+                foundGroup.members++;
+                foundGroup.save();
+                User.findById(user.id,function (err,foundUser) {
+                    if(err){
+                        console.log(err);
+                    }
+                    else {
+                        foundUser.groups.push(foundGroup);
+                        foundUser.save();
+                    }
+                });
+                req.flash("success", "user Successfully added!");
+                res.redirect("back");
+            }
+        });
     });
 });
 
-// Display All Group Requests
-router.get("/:id/requests",middleware.isGroupOwner,function (req,res) {
-    Group.findById(req.params.id).populate("users").exec(function (err, foundGroup) {
-        if (err) {
-            console.log(err);
-        } else {
-            res.render("groups/request", {group: foundGroup, currentUser: req.user});
-        }
-    });
-});
 
 // export the router module
 module.exports = router;
