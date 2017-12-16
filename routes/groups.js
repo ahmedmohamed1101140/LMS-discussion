@@ -148,6 +148,7 @@ router.put("/:id", middleware.isGroupOwner, function(req, res) {
 // DESTROY -- Delete the Group Information and all posts and comment associated with the group and delete it form all registered users
 router.delete("/:id", middleware.isGroupOwner,middleware.deleteAssociations, function(req, res) {
     //Now Delete The Group Safely
+
     Group.findByIdAndRemove(req.params.id, function(err) {
         if (err) {
             res.redirect("/groups");
