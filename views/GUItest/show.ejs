@@ -147,7 +147,7 @@
                 <p class="text-white text-subhead">Ask our awesome community</p>
             </div>
             <div class="media-right">
-                <a class="btn btn-default btn-lg">Add New Post</a>
+                <a class="btn btn-default btn-lg" href="/groups/<%= group._id%>/posts/new">Add New Post</a>
             </div>
         </div>
     </div>
@@ -156,6 +156,7 @@
 <div class="container">
     <div class="page-section">
         <div class="row">
+            <% group.posts.forEach(function (Post) {  %>
             <div class="col-md-8 col-lg-9">
                 <div class="media media-grid media-paper-shadow margin-top-none s-container">
                     <div class="media-left">
@@ -165,21 +166,32 @@
                         <div class="panel panel-default paper-shadow" data-z="0.5">
                             <div class="panel-body">
                                 <div class="pull-right">
-                                    <a href="#" class="btn btn-white btn-flat"><i class="fa fa-comments fa-fw"></i> 12</a>
+                                    <a href="#" class="btn btn-white btn-flat"><i class="fa fa-comments fa-fw"></i> <%= Post.comments_num%></a>
                                 </div>
                                 <h4 class="text-title media-heading">
-                                    <a href="#" class="link-text-color"><%=currentUser.firstname%> <%=currentUser.lastname%></a>
+                                    <a href="#" class="link-text-color"><%=Post.author.username%></a>
                                 </h4>
                                 <p class="text-light text-caption">
-                                    <i class="fa fa-clock-o fa-fw"></i> 5 mins
+                                    <i class="fa fa-clock-o fa-fw"></i> <%= Post.created.toDateString()%>
                                 </p>
-                                <p class="text-light">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad aperiam atque deserunt, dicta eius, fuga id illo ipsa ipsam minus neque non sunt, vitae. Animi aperiam beatae blanditiis dicta dolore eaque, ex excepturi explicabo laudantium nobis nulla praesentium quia voluptatem.</p>
+                                <p class="text-light"><%= Post.content %></p>
+
+                                <% if(currentUser && Post.author.id.equals(currentUser._id)){ %>
+                                <a class="btn btn-xs btn-warning" href="/groups/<%= group._id %>/posts/<%= Post._id %>/edit">Edit</a>
+                                <form id="delete-form" action="/groups/<%= group._id %>/posts/<%= Post._id %>?_method=DELETE" method="POST">
+                                    <button class="btn btn-xs btn-danger">Delete</button>
+                                </form>
+                                <% } %>
+
+
                             </div>
                         </div>
                     </div>
                 </div>
                 <br/>
             </div>
+                     <% });%>
+
             <div class="col-md-4 col-lg-3">
                 <div class="panel panel-default">
                     <div class="panel-body">

@@ -1,0 +1,21 @@
+<% include ../partials/header %>
+
+<div class="container">
+    <div class="row">
+        <h1 style="text-align:center">Create a Post </h1>
+        <div style="width:30%; margin:25px auto;">
+
+            <form action="/groups/<%= Group._id %>/posts" method="POST">
+                <div class="form-group">
+                    <input class="form-control" type="text" name="content" placeholder="content">
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-lg btn-primary btn-block">Submit</button>
+                </div>
+            </form>
+
+            <a href="/groups">Go back to view campgrounds</a>
+        </div>
+    </div>
+</div>
+<% include ../partials/footer %>
