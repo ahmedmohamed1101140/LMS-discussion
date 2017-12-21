@@ -20,7 +20,7 @@ var commentRoutes    = require("./routes/comments"),
 
 
 // set up the mongodb
-mongoose.connect("mongodb://localhost/discussion_app");
+mongoose.connect("mongodb://localhost/discussion_app",{useMongoClient:true});
 
 // set up body-parser
 app.use(bodyParser.urlencoded({extended: true}));
@@ -59,8 +59,8 @@ app.use(function (req, res, next) {
 //set up routes
 app.use("/", indexRoutes);
 app.use("/groups", groupRoutes);
-// app.use("/groups/:id/posts", postRoutes);
-// app.use("/groups/:id/posts/:id/comments", commentRoutes);
+app.use("/groups/:id/posts", postRoutes);
+app.use("/groups/:id/posts/:post_id/comments", commentRoutes);
 
 // set up the server
 app.listen("3000", process.env.IP, function () {

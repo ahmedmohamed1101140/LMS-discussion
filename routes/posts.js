@@ -1,99 +1,126 @@
 var express    = require("express");
-var router     = express.Router();
-var Campground = require("../models/post");
-// var middleware = require("../middleware");
+var router     = express.Router({mergeParams: true});
+var Group      = require("../models/group");
+var User       = require("../models/user");
+var Post       = require("../models/post");
+var Comments   = require("../models/comment");
+var middleware = require("../middleware/post");
 
-// INDEX -- view all campgrounds, GET route
-router.get("/", function (req, res) {
-    // get all campgrounds data from Datebase
-    Campground.find({}, function (err, allCampgrounds) {
-        if (err) {
-            console.log(err);
+///groups/:id/posts
+
+// INDEX -- already in the groups show
+
+// router.get("/",function (req, res) {
+//
+//     console.log(req.params.id);
+//     Group.findById(req.params.id,function(err,Group){
+//
+//         if(err){console.log(err)}
+//         else
+//         {
+//             res.render('/show',{Group:Group});
+//         }
+//
+//     });
+//
+// });
+
+//NEW - Form
+router.get('/new',middleware.isLoggedIn,function (req,res){
+
+    console.log(req.params.id);
+    Group.findById(req.params.id,function(err,Group){
+
+        if(err){console.log(err)}
+        else
+        {
+            res.render('Posts/new',{Group:Group});
+        }
+    });
+
+}); //working
+
+
+//CREATE - Create an new Post in group
+router.post("/",middleware.IsPostOwner,function (req, res) {
+
+    Group.findById(req.params.id,function (err,group) {
+        if(err){ console.log(err);}
+        else{
+
+            var content =req.body.content;
+            var image =req.body.image;
+            var author = {
+                id: req.user._id,
+                username: req.user.username,
+                userimage :req.user.image };
+
+            var newPost = {content: content,image:image,author:author};
+            Post.create(newPost,function (err,newpost) {
+                if(err){
+                    console.log(err);
+                    req.flash("error","the post is not created ");
+                    res.redirect("back");
+                }
+                else{
+                    group.posts.push(newpost);
+                    group.post_num++;
+                    group.save();
+                    res.redirect("/groups/"+req.params.id);
+                }
+            });
+        }
+    });
+});//working
+
+
+
+//Edit- redirect to form
+router.get('/:post_id/edit',middleware.IsPostOwner,function (req,res) {
+
+    console.log('here');
+
+    Post.findById(req.params.post_id,function (err,post) {
+        if(err){console.log(err);
+            res.redirect('back');
+        }
+        else{
+            console.log(post);
+            console.log(req.params.post_id);
+            res.render('Posts/edit',{Post:post,Group_id:req.params.id})
+        }
+
+    });
+
+});
+
+router.put("/:post_id",middleware.IsPostOwner, function(req, res){
+
+    Post.findByIdAndUpdate(req.params.post_id, req.body.Post, function(err, post){
+        if(err){
+            res.redirect("back");
         } else {
-            // res.render("campgrounds/index", {campgrounds: allCampgrounds, currentUser: req.user});
-            res.render("landing");
+            res.redirect("/groups/"+req.params.id);
         }
     });
 });
-//
-// // CREATE -- create new campground, POST route
-// router.post("/", middleware.isLoggedIn, function (req, res) {
-//     // get data from the form
-//     var name = req.body.name;
-//     var price = req.body.price;
-//     var image = req.body.image;
-//     var desc = req.body.description;
-//     var author = {
-//         id: req.user._id,
-//         username: req.user.username
-//     };
-//     var newCampground = {name: name, price: price, image: image, description: desc, author: author};
-//
-//     // create a new campground and save it to the Database
-//     Campground.create(newCampground, function (err, newlyCreated) {
-//         if (err) {
-//             console.log(err);
-//         } else {
-//             // redirect to the campgrounds route
-//             res.redirect("/campgrounds");
-//         }
-//     });
-// });
-//
-// // NEW -- new campgrounds form, GET route
-// router.get("/new", middleware.isLoggedIn, function (req, res) {
-//     res.render("campgrounds/new");
-// });
-//
-// // SHOW -- display info about a specific campground, GET route
-// router.get("/:id", function (req, res) {
-//     // find the campground with provided ID
-//     Campground.findById(req.params.id).populate("comments").exec(function (err, foundCampground) {
-//         if (err) {
-//             console.log(err);
-//         } else {
-//             console.log(foundCampground);
-//             // render the show template with the foundCampground
-//             res.render("campgrounds/show", {campground: foundCampground});
-//         }
-//     });
-// });
-//
-// // EDIT campground route
-// router.get("/:id/edit", middleware.checkCampgroundOwnership, function(req, res) {
-//     // find the campground with the requested id
-//     Campground.findById(req.params.id, function (err, foundCampground) {
-//         if (err)
-//             console.log(err);
-//         // parse foundCampground to the edit template and render it
-//         res.render("campgrounds/edit", {campground: foundCampground});
-//     });
-// });
-//
-// // UPDATE campground route
-// router.put("/:id", middleware.checkCampgroundOwnership, function(req, res) {
-//     // find and update the correct campground
-//     Campground.findByIdAndUpdate(req.params.id, req.body.campground, function(err, updatedCampground) {
-//         // redirect to campground page or page with specific id
-//         if (err) {
-//             res.redirect("/campgrounds");
-//         } else {
-//             res.redirect("/campgrounds/" + req.params.id);
-//         }
-//     });
-// });
-//
-// // DESTROY campground route
-// router.delete("/:id", middleware.checkCampgroundOwnership, function(req, res) {
-//     // delete a campground with given id and redirect to camprgounds page
-//     Campground.findByIdAndRemove(req.params.id, function(err) {
-//         if (err) {
-//             res.redirect("/campgrounds");
-//         } else {
-//             res.redirect("/campgrounds");
-//         }
-//     });
-// });
 
-// export the router module
+
+router.delete("/:post_id",middleware.IsPostOwner,middleware.deletePostAssociation,function(req, res){
+
+    console.log("the delete req");
+
+    Post.findByIdAndRemove(req.params.post_id, function(err){
+        if(err){
+            res.redirect("back");
+        } else {
+            res.redirect("/groups/"+req.params.id);
+        }
+    });
+
+});
+
+
+
+
 module.exports = router;
