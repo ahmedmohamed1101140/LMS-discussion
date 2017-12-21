@@ -1,0 +1,35 @@
+<div class="col-md-8 col-lg-9">
+    <% group.posts.forEach(function (Post) {  %>
+    <div class="media media-grid media-paper-shadow margin-top-none s-container">
+        <div class="media-left">
+            <img src="<%=Post.author.userimage%>" alt="user image" height="50px" width="50px">
+        </div>
+        <div class="media-body">
+            <div class="panel panel-default paper-shadow" data-z="0.5">
+                <div class="panel-body">
+                    <div class="pull-right">
+                        <a href="/groups/<%= group._id %>/posts/<%= Post._id %>/comments" class="btn btn-white btn-flat"><i class="fa fa-comments fa-fw"></i> <%= Post.comments_num %></a>
+                    </div>
+                    <h4 class="text-title media-heading">
+                        <a href="#" class="link-text-color"><%=Post.author.username%></a>
+                    </h4>
+                    <p class="text-light text-caption">
+                        <i class="fa fa-clock-o fa-fw"></i> <%= Post.created.toDateString()%>
+                    </p>
+                    <p class="text-light"><%= Post.content %></p>
+
+                    <% if(currentUser && Post.author.id.equals(currentUser._id)){ %>
+                    <a class="btn btn-xs btn-warning" href="/groups/<%= group._id %>/posts/<%= Post._id %>/edit">Edit</a>
+                    <form id="delete-form" action="/groups/<%= group._id %>/posts/<%= Post._id %>?_method=DELETE" method="POST">
+                        <button class="btn btn-xs btn-danger">Delete</button>
+                    </form>
+                    <% } %>
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <% });%>
+</div>

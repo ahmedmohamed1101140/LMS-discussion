@@ -11,29 +11,27 @@ var middleware = require("../middleware/post");
 
 
 //INDEX
-router.get('/',function (req,res) {
+router.get('/',middleware.isLoggedIn,function (req,res) {
 
     Post.findById(req.params.post_id).populate("comments").exec(function (err, Post) {
         if (err) {
             console.log(err);
         } else {
+            Group.findById(req.params.id,function (err,foundGroup) {
+                if(err){
+                    console.log(err);
+                }
+                else{
+                    res.render('Posts/show2',{Post:Post , group: foundGroup , Group_id:req.params.id})
+                }
+            });
 
-            res.render('Posts/show2',{Post:Post ,Group_id:req.params.id})
         }
     });
 });
 
-//New- already in the page
-router.get("/new",function (req,res) {
-
-});
-//Show - the comment does  not contain any sub things
-router.get('/show',function (req,res) {
-    
-});
-
 //CREATE -- create new Comment in post//
-router.post("/",function (req,res) {
+router.post("/",middleware.isLoggedIn,function (req,res) {
 
     Post.findById(req.params.post_id,function (err,Post) {
 
@@ -67,7 +65,7 @@ router.post("/",function (req,res) {
 });
 
 //Edit -form
-router.get('/:comment_id/edit', function (req,res) {
+router.get('/:comment_id/edit',middleware.IsCommentOwner, function (req,res) {
 
     Comments.findById(req.params.comment_id,function (err,comment) {
         if(err){
@@ -83,7 +81,7 @@ router.get('/:comment_id/edit', function (req,res) {
 });
 
 //Update Comment
-router.put('/:comment_id',function (req,res) {
+router.put('/:comment_id',middleware.IsCommentOwner,function (req,res) {
 
     console.log(req.params.comment_id);
      var udpatedcomment={content:req.body.content};
@@ -99,7 +97,8 @@ router.put('/:comment_id',function (req,res) {
 
 });
 
-router.delete('/:comment_id', function (req,res) {
+//DELETE COMMENT
+router.delete('/:comment_id',middleware.IsCommentOwner, function (req,res) {
 
     Comments.findByIdAndRemove(req.params.comment_id, function (err) {
         if(err){console.log(err);}

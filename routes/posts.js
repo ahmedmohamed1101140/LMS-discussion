@@ -10,21 +10,6 @@ var middleware = require("../middleware/post");
 
 // INDEX -- already in the groups show
 
-// router.get("/",function (req, res) {
-//
-//     console.log(req.params.id);
-//     Group.findById(req.params.id,function(err,Group){
-//
-//         if(err){console.log(err)}
-//         else
-//         {
-//             res.render('/show',{Group:Group});
-//         }
-//
-//     });
-//
-// });
-
 //NEW - Form
 router.get('/new',middleware.isLoggedIn,function (req,res){
 
@@ -40,9 +25,8 @@ router.get('/new',middleware.isLoggedIn,function (req,res){
 
 }); //working
 
-
 //CREATE - Create an new Post in group
-router.post("/",middleware.IsPostOwner,function (req, res) {
+router.post("/",middleware.isLoggedIn,function (req, res) {
 
     Group.findById(req.params.id,function (err,group) {
         if(err){ console.log(err);}
@@ -73,8 +57,6 @@ router.post("/",middleware.IsPostOwner,function (req, res) {
     });
 });//working
 
-
-
 //Edit- redirect to form
 router.get('/:post_id/edit',middleware.IsPostOwner,function (req,res) {
 
@@ -94,6 +76,7 @@ router.get('/:post_id/edit',middleware.IsPostOwner,function (req,res) {
 
 });
 
+//EDIT POST
 router.put("/:post_id",middleware.IsPostOwner, function(req, res){
 
     Post.findByIdAndUpdate(req.params.post_id, req.body.Post, function(err, post){
@@ -105,7 +88,7 @@ router.put("/:post_id",middleware.IsPostOwner, function(req, res){
     });
 });
 
-
+//DELETE POST
 router.delete("/:post_id",middleware.IsPostOwner,middleware.deletePostAssociation,function(req, res){
 
     console.log("the delete req");
@@ -119,8 +102,6 @@ router.delete("/:post_id",middleware.IsPostOwner,middleware.deletePostAssociatio
     });
 
 });
-
-
 
 
 module.exports = router;

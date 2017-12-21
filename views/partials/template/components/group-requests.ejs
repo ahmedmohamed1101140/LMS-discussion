@@ -1,0 +1,27 @@
+<%if(group.admin.id.equals(currentUser._id)){%>
+<div class="panel panel-default">
+    <div class="panel-heading panel-collapse-trigger">
+        <h4 class="panel-title">Group Requests</h4>
+    </div>
+    <ul class="list-group list-group-menu">
+        <%group.users.forEach(function(user) {%>
+        <%if(user.userstatus === 0){%>
+        <li class="list-group-item">
+            <div class="panel-body">
+                <div class="media media-clearfix-xs">
+                    <div class="media-left">
+                        <h4><%=user.username%></h4>
+                    </div>
+                    <div class="media-body">
+                        <a class="btn pull-right btn-blue btn-flat paper-shadow relative " data-z="0" data-hover-z="1" data-animated href="<%= group._id %>/user/<%=user._id%>">
+                            <i class="fa fa-fw fa-plus-circle"></i>Accept
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </li>
+        <%}%>
+        <%});%>
+    </ul>
+</div>
+<%}%>

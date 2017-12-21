@@ -1,0 +1,29 @@
+<div class="parallax overflow-hidden page-section bg-cyan-300">
+    <div class="container parallax-layer" data-opacity="true">
+        <div class="media media-grid v-middle">
+            <div class="media-left">
+                <img src="<%=group.image%>">
+            </div>
+            <div class="media-body">
+                <h3 class="text-display-2 text-white margin-none"><%=group.name%></h3>
+                <p class="text-white text-subhead">Ask our awesome community</p>
+            </div>
+            <div class="media-right">
+                <a class="btn btn-default btn-lg" href="/groups/<%= group._id%>/posts/new">Add New Post</a>
+            </div>
+        </div>
+    </div>
+    <!--messages-->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="container">
+                <% if (error && error.length > 0) { %>
+                <div class="alert alert-danger" role="alert"><%= error %></div>
+                <% } %>
+                <% if (success && success.length > 0) { %>
+                <div class="alert alert-success" role="alert"><%= success %></div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>

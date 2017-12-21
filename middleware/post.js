@@ -7,30 +7,14 @@ var middlewareObj = {};
 
 
 
-middlewareObj.deletePostAssociation=function (req,res,next) {
+middlewareObj.isLoggedIn = function (req, res, next) {
+    if (req.isAuthenticated())
+        return next();
 
-    Post.findById(req.params.post_id).populate("comments").exec(function (err,FoundPost) {
-
-        if(err){console.log(err);}
-        else{
-            FoundPost.comments.forEach(function (comment) {
-                 // remove all its comments.
-                Comment.findByIdAndRemove(comment._id,function (err) {
-                    if(err){
-                        console.log(err);
-                    }
-                    else {
-                        console.log("Comment Deleted");
-                    }
-                });
-            });
-        }
-    });
-    next();
+    // send flash message for the next request if error
+    req.flash("error", "You need to be logged in to do that!");
+    res.redirect("/login");
 }
-
-
-
 
 middlewareObj.IsPostOwner=function (req, res,next) {
     if (req.isAuthenticated()){
@@ -87,18 +71,27 @@ middlewareObj.IsCommentOwner=function (req, res,next) {
 
 }
 
+middlewareObj.deletePostAssociation=function (req,res,next) {
 
-middlewareObj.isLoggedIn = function (req, res, next) {
-    if (req.isAuthenticated())
-        return next();
+    Post.findById(req.params.post_id).populate("comments").exec(function (err,FoundPost) {
 
-    // send flash message for the next request if error
-    req.flash("error", "You need to be logged in to do that!");
-    res.redirect("/login");
+        if(err){console.log(err);}
+        else{
+            FoundPost.comments.forEach(function (comment) {
+                // remove all its comments.
+                Comment.findByIdAndRemove(comment._id,function (err) {
+                    if(err){
+                        console.log(err);
+                    }
+                    else {
+                        console.log("Comment Deleted");
+                    }
+                });
+            });
+        }
+    });
+    next();
 }
-
-
-
 
 
 
