@@ -2,9 +2,9 @@ var express    = require("express");
 var router     = express.Router({mergeParams: true});
 var Group      = require("../models/group");
 var User       = require("../models/user");
-var Post       = require("./models/post");
-var Comments   = require("./models/comment");
-var middleware = require("../middleware");
+var Post       = require("../models/post");
+var Comments   = require("../models/comment");
+var middleware = require("../middleware/post");
 
 
 //groups/:id/posts/:post_id/comments
@@ -18,7 +18,7 @@ router.get('/',function (req,res) {
             console.log(err);
         } else {
 
-            res.render('Posts/show',{Post:Post ,Group_id:req.params.id})
+            res.render('Posts/show2',{Post:Post ,Group_id:req.params.id})
         }
     });
 });
@@ -54,7 +54,10 @@ router.post("/",function (req,res) {
               res.redirect('back');
               }
               else {
+              console.log(Post.comments_num);
                Post.comments.push(ncomment);
+               Post.comments_num++;
+               console.log(Post.comments_num);
                Post.save();
               res.redirect('/groups/'+req.params.id +'/posts/'+req.params.post_id+'/comments');
         }
@@ -72,7 +75,7 @@ router.get('/:comment_id/edit', function (req,res) {
         }
         else {
 
-            res.render('Comments/edit',{Comment:comment ,Group_id:req.params.id, Post_id:req.params.id});
+            res.render('Comments/edit',{Comment:comment ,Group_id:req.params.id, Post_id:req.params.post_id});
 
         }
     });
@@ -82,13 +85,14 @@ router.get('/:comment_id/edit', function (req,res) {
 //Update Comment
 router.put('/:comment_id',function (req,res) {
 
-     var newComment={content:req.body.content};
-
-    Comments.findByIdAndUpdate(req.params.comment_id,newComment,function (err,comment) {
+    console.log(req.params.comment_id);
+     var udpatedcomment={content:req.body.content};
+    Comments.findByIdAndUpdate(req.params.comment_id,udpatedcomment,function (err,comment) {
         if(err){console.log(err);
           res.redirect('back');
         }
         else{
+            console.log(comment);
             res.redirect('/groups/'+req.params.id +'/posts/'+req.params.post_id+'/comments');
         }
     })
@@ -103,6 +107,7 @@ router.delete('/:comment_id', function (req,res) {
             res.redirect('/groups/'+req.params.id +'/posts/'+req.params.post_id+'/comments')
         }
     });
+
 });
 
 
