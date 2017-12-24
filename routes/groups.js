@@ -18,7 +18,7 @@ router.get("/",middleware.isLoggedIn, function (req, res) {
                    console.log(err);
                }
                else {
-                   res.render("groups/index", {groups: allGroups, currentUser: founduser});
+                   res.render("Indextest", {groups: allGroups, currentUser: founduser});
                    // res.render("GUItest/index", {groups: allGroups, currentUser: founduser});
                }
             });
