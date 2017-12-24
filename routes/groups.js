@@ -18,7 +18,7 @@ router.get("/",middleware.isLoggedIn, function (req, res) {
                    console.log(err);
                }
                else {
-                   res.render("Indextest", {groups: allGroups, currentUser: founduser});
+                   res.render("groups/index", {groups: allGroups, currentUser: founduser});
                    // res.render("GUItest/index", {groups: allGroups, currentUser: founduser});
                }
             });
@@ -49,8 +49,8 @@ router.get("/new", middleware.isAdmin, function (req, res) {
        }
        else {
            console.log(foundUser);
-           res.render("groups/new");
-           // res.render("GUItest/new",{user:foundUser});
+           // res.render("groups/new");
+           res.render("GUItest/new",{user:foundUser});
 
        }
     });

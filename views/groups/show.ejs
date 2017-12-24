@@ -13,7 +13,13 @@
                 <h1><%=group.name%></h1>
                 <p>Forget About FaceBook and let's Talk here with your Instructors</p>
             </div>
-                <a class="btn btn-primary btn-lg" href="/groups/<%= group._id%>/posts/new">Add New Post</a>
+            <a class="btn btn-primary btn-lg" href="/groups/<%= group._id%>/posts/new">Add New Post</a>
+            <% if(currentUser && group.admin.id.equals(currentUser._id)){ %>
+                <a href="/groups/<%= group._id %>/edit" class="btn btn-lg btn-warning">Edit Group</a>
+                <form id="delete-form" action="/groups/<%= group._id%>?_method=DELETE" method="POST">
+                    <button class="btn btn-lg btn-danger">Delete</button>
+                </form>
+            <% } %>
         </div>
 
     </div>

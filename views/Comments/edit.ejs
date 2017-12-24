@@ -7,7 +7,7 @@
 
             <form action="/groups/<%= Group_id %>/posts/<%=Post_id%>/comments/<%=Comment._id%>?_method=PUT" method="POST">
                 <div class="form-group">
-                    <h4>Group Name:</h4>
+                    <h4>Comment Content:</h4>
                     <input class="form-control" type="text" name="content" value="<%= Comment.content %>">
                 </div>
                 <div class="form-group">

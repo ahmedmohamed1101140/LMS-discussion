@@ -8,7 +8,7 @@ var middleware = require("../middleware");
 
 // default route
 router.get("/", function (req, res) {
-    res.render("Main");
+    res.render("landing");
 });
 
 //just for test

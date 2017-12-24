@@ -1,5 +1,123 @@
-<% include ../partials/header%>
+<!DOCTYPE html>
+<html>
+<header>
+    <title>LMS Board</title>
 
-post page
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.1/css/bulma.css">
+    <link rel="stylesheet" href="/stylesheets/main.css">
+</header>
+<body>
+
+
+<!--flash message norification-->
+<%include ../partials/messages%>
+
+<section class="hero is-primary">
+    <div class="hero-body">
+        <div class="container">
+            <h1 class="title">
+                Post Home Page
+            </h1>
+            <h2 class="subtitle">
+                View and discuss your posts and comments here
+            </h2>
+        </div>
+    </div>
+</section>
+
+
+<div class="card" style="margin-right: 350px;margin-left: 350px;margin-bottom: 50px;margin-top: 50px">
+    <div class="card-image">
+        <figure class="image" style="height: auto%;width: auto;">
+            <img src="<%=Post.image%>" width="10px" height="10px" alt="Placeholder image">
+        </figure>
+    </div>
+    <div class="card-content">
+        <div class="media">
+            <div class="media-left">
+                <figure class="image is-48x48">
+                    <img src="<%=Post.author.userimage%>" alt="Placeholder image">
+                </figure>
+            </div>
+            <div class="media-content">
+                <p class="title is-4"><%=Post.author.username%></p>
+            </div>
+        </div>
+
+        <div class="content">
+            <%=Post.content%>
+            <br>
+            <time datetime="2016-1-1"><%=Post.created.toDateString()%></time>
+        </div>
+    </div>
+    <div>
+        <% if(currentUser && Post.author.id.equals(currentUser._id)){ %>
+        <a style="margin-left: 522px;" class="button is-success is-outlined" href="/groups/<%= group._id %>/posts/<%= Post._id %>/edit">Edit</a>
+        <form id="delete-form" action="/groups/<%= group._id %>/posts/<%= Post._id %>?_method=DELETE" method="POST">
+            <button style="margin-left: 22px" class="button is-danger is-outlined">Delete</button>
+        </form>
+        <% } %>
+    </div>
+    <br>
+    <hr>
+
+    <% Post.comments.forEach(function(comment) {  %>
+    <article class="media" style="margin-left: 10px;margin-right: 10px">
+        <figure class="media-left">
+            <p class="image is-64x64">
+                <img src="<%=comment.author.userimage %>">
+            </p>
+        </figure>
+        <div class="media-content">
+            <div class="content">
+                <p>
+                    <strong><%=comment.author.username %></strong><br>
+                    <small><%=comment.created.toDateString()%></small>
+                    <br>
+                    <%= comment.content %>
+                    <br>
+                </p>
+            </div>
+        </div>
+        <% if(currentUser && comment.author.id.equals(currentUser._id)){ %>
+            <a class="button is-success is-outlined" style="margin-right: 20px" href="/groups/<%= Group_id %>/posts/<%= Post._id %>/comments/<%=comment._id%>/edit">Edit</a>
+
+            <br>
+            <form id="delete-form" action="/groups/<%= Group_id %>/posts/<%= Post._id %>/comments/<%=comment._id%>?_method=DELETE" method="POST">
+                <button class="button is-danger is-outlined">Delete</button>
+            </form>
+        <% } %>
+    </article>
+    <hr>
+    <% }); %>
+
+    <!--to add new comment-->
+    <form action="/groups/<%=Group_id%>/posts/<%=Post._id%>/comments" method="POST" >
+
+        <article class="media" style="margin-left: 10px;margin-right: 10px">
+            <figure class="media-left">
+                <p class="image is-64x64">
+                    <img src="<%=currentUser.image%>">
+                </p>
+            </figure>
+            <div class="media-content">
+                <div class="field">
+                    <p class="control">
+                        <textarea class="textarea" name="content" placeholder="Add a comment..."></textarea>
+                    </p>
+                </div>
+                <div class="field">
+                    <p class="control">
+                        <button type="submit" style="margin-bottom: 10px" class="button button is-info is-outlined">Post comment</button>
+                    </p>
+                </div>
+            </div>
+        </article>
+    </form>
+
+</div>
+
+
+
 
 <% include ../partials/footer %>
