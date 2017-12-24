@@ -1,14 +1,70 @@
 <% include ../partials/header %>
 
 <div class="container">
+    <div class="jumbotron">
+        <div class="row">
+            <div class="col-md-4">
+                <figure class="figure">
+                    <img src="<%=group.image%>" class="figure-img img-fluid rounded" alt="A generic square placeholder image with rounded corners in a figure.">
+                </figure>
+            </div>
+            <br><br><br>
+            <div class="col md 8">
+                <h1><%=group.name%></h1>
+                <p>Forget About FaceBook and let's Talk here with your Instructors</p>
+            </div>
+                <a class="btn btn-primary btn-lg" href="/groups/<%= group._id%>/posts/new">Add New Post</a>
+        </div>
+
+    </div>
     <div class="row">
-        <h1 style="text-align:center">Create a new Group</h1>
-        <div style="width:30%; margin:25px auto;">
+        <div class="col-md-9">
+            <div class="card-group">
+                <%group.posts.forEach(function (post) {%>
+                <div class="row">
+                    <div class="col-md-1">
+                        <img  src="<%= post.author.userimage%>" class="img-thumbnail" alt="Image" width="80" height="80" alt="Card image cap">
+                    </div>
+                    <div class="col-md-11">
+                        <div class="thumbnail">
+                            <div class="thumbnail-body" style="margin-left: 20px">
+                                <h4 class="thumbnail-title"><%=post.author.username%></h4>
+                                <p class="thumbnail-text"><%- post.content.substring(0,50)%>...</p>
+                            </div>
 
-            <%=group%>
+                            <div class="thumbnail-footer" style="margin-left: 20px">
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-9">
+                                        <small class="text-muted"><%=post.created.toDateString()%></small>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <a href="/groups/<%= group._id %>/posts/<%= post._id %>/comments" class="btn btn-primary btn-flat"><i class="fa fa-comments fa-fw"></i> Read More..</a>
+                                        <br><br>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <% }); %>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <h3>Group Requests</h3>
+            <ul class="list-group">
+                <%group.users.forEach(function(user) {%>
+                <%if(user.userstatus === 0){%>
+                <li class="list-group-item d-flex justify-content-between align-items-center">
+                    <%=user.username%>
+                    <a class="btn-blue" style="margin-left: 150px" href="<%= group._id %>/user/<%=user._id%>">Accept</a>
+                </li>
+                <%}%>
+                <%});%>
+            </ul>
 
-            <a href="/groups">Go back to view campgrounds</a>
         </div>
     </div>
+
 </div>
 <% include ../partials/footer %>

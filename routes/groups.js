@@ -18,8 +18,8 @@ router.get("/",middleware.isLoggedIn, function (req, res) {
                    console.log(err);
                }
                else {
-                   // res.render("groups/index", {groups: allGroups, currentUser: founduser});
-                   res.render("GUItest/index", {groups: allGroups, currentUser: founduser});
+                   res.render("groups/index", {groups: allGroups, currentUser: founduser});
+                   // res.render("GUItest/index", {groups: allGroups, currentUser: founduser});
                }
             });
         }
@@ -34,8 +34,8 @@ router.get("/mygroups",middleware.isLoggedIn, function (req, res) {
            console.log(err);
        }
        else {
-           // res.render("groups/mygroups",{user: foundUser});
-           res.render("GUItest/mygroups",{user:foundUser});
+           res.render("groups/mygroups",{user: foundUser});
+           // res.render("GUItest/mygroups",{user:foundUser});
        }
     });
 }); //WORKED
@@ -49,7 +49,8 @@ router.get("/new", middleware.isAdmin, function (req, res) {
        }
        else {
            console.log(foundUser);
-           res.render("GUItest/new",{user:foundUser});
+           res.render("groups/new");
+           // res.render("GUItest/new",{user:foundUser});
 
        }
     });
@@ -98,8 +99,8 @@ router.get("/:id", middleware.isAllowed , function (req, res) {
             console.log(err);
         } else {
             // render the show template with the foundGroup
-            // res.render("groups/show", {group: foundGroup});
-            res.render("GUItest/show", {group: foundGroup});
+            res.render("groups/show", {group: foundGroup});
+            // res.render("GUItest/show", {group: foundGroup});
         }
     });
 }); //WORKED
@@ -118,7 +119,8 @@ router.get("/:id/edit", middleware.isGroupOwner, function(req, res) {
                 console.log(err);
             }
             else {
-                res.render("GUItest/edit", {group: foundGroup,user:foundUser});
+                res.render("groups/edit",{group:foundGroup});
+                // res.render("GUItest/edit", {group: foundGroup,user:foundUser});
 
             }
         });
