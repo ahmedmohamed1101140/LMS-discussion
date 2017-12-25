@@ -22,8 +22,8 @@ router.get('/',middleware.isLoggedIn,function (req,res) {
                     console.log(err);
                 }
                 else{
-                    res.render('Posts/show',{Post:Post , group: foundGroup , Group_id:req.params.id})
-                    // res.render('GUItest/show2',{Post:Post , group: foundGroup , Group_id:req.params.id})
+                    // res.render('Posts/show',{Post:Post , group: foundGroup , Group_id:req.params.id})
+                    res.render('GUItest/show2',{Post:Post , group: foundGroup , Group_id:req.params.id})
                 }
             });
 
