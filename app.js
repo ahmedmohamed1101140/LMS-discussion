@@ -10,8 +10,7 @@ var express        = require("express"),
     Group          = require("./models/group"),
     Post           = require("./models/post"),
     Comment        = require("./models/comment"),
-    User           = require("./models/user"),
-    seedDB         = require("./seeds");
+    User           = require("./models/user");
 
 var commentRoutes    = require("./routes/comments"),
     postRoutes       = require("./routes/posts"),
@@ -52,8 +51,7 @@ app.use(function (req, res, next) {
     next();
 });
 
-// seedBD for testing
-// seedDB();
+
 
 
 //set up routes
@@ -63,6 +61,6 @@ app.use("/groups/:id/posts", postRoutes);
 app.use("/groups/:id/posts/:post_id/comments", commentRoutes);
 
 // set up the server
-app.listen("3000", process.env.IP, function () {
-    console.log("The YelpCamp server is running at port: 3000");
+app.listen(process.env.PORT || "3000", process.env.IP, function () {
+    console.log("The Discussion App server is running at port: "+process.env.PORT);
 });
