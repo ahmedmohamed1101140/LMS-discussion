@@ -21,8 +21,6 @@ var commentRoutes    = require("./routes/comments"),
 // set up the mongodb
 
 var url = process.env.DATABASEURL || "mongodb://localhost/discussion_app";
-
-// mongoose.connect("mongodb://merag:merag1234@ds145230.mlab.com:45230/discussion_app");
 mongoose.connect(url,{useMongoClient:true});
 
 // set up body-parser

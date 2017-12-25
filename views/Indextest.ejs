@@ -34,14 +34,23 @@
     </div>
   </div>
 </nav>
-   
+
 
     <div class="page-section">
         <button type="button" class="btn btn-secondary pull-right">Add New Group</button>
         <div class="page-title">
            <h1 class="title"> Welcome to AIN SHAMS Discusion Board</h1>
         </div>
-    </div> 
+    </div>
+
+<div class="container">
+    <% if (error && error.length > 0) { %>
+    <div class="alert alert-danger" role="alert"><%= error %></div>
+    <% } %>
+    <% if (success && success.length > 0) { %>
+    <div class="alert alert-success" role="alert"><%= success %></div>
+    <% } %>
+</div>
     <div class="row">
         <%groups.forEach(function (group) {%>
                  <div class="col-md-5">
@@ -59,18 +68,18 @@
         <% }); %>
 
     </div>
-    
-    
+
+
      <div class="footer">
                     <span>Copyrights © 2017 all right reserved for <br>Learning managment System Team</span>
                     <ul>
                         <a href="www.googleplus.com" > <li><i class="fa fa-google-plus" aria-hidden="true"></i></li></a>
                         <a href="www.linkedin.com" > <li><i class="fa fa-linkedin" aria-hidden="true"></i></li></a>
                     </ul>
-                    
-                    
+
+
                 </div>
-    
+
 
 </body>
 </html>

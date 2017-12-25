@@ -19,7 +19,6 @@ router.get("/",middleware.isLoggedIn, function (req, res) {
                }
                else {
                    res.render("Indextest", {groups: allGroups, currentUser: founduser});
-                   // res.render("GUItest/index", {groups: allGroups, currentUser: founduser});
                }
             });
         }
@@ -35,7 +34,6 @@ router.get("/mygroups",middleware.isLoggedIn, function (req, res) {
        }
        else {
            res.render("groups/mygroups",{user: foundUser});
-           // res.render("GUItest/mygroups",{user:foundUser});
        }
     });
 }); //WORKED
@@ -50,8 +48,6 @@ router.get("/new", middleware.isAdmin, function (req, res) {
        else {
            console.log(foundUser);
            res.render("groups/new");
-           // res.render("GUItest/new",{user:foundUser});
-
        }
     });
 }); //WORKED
@@ -66,7 +62,7 @@ router.post("/", middleware.isAdmin, function (req, res) {
         userimage: req.user.image
     };
     // create a new Group and save it to the Database
-    var newGroup = {name: name, admin: admin };
+    var newGroup = {name: name, admin: admin,image:req.body.image };
     Group.create(newGroup,function (err,newlyCreated) {
         if(err){
             console.log(err);
@@ -100,7 +96,6 @@ router.get("/:id", middleware.isAllowed , function (req, res) {
         } else {
             // render the show template with the foundGroup
             res.render("groups/show", {group: foundGroup});
-            // res.render("GUItest/show", {group: foundGroup});
         }
     });
 }); //WORKED
@@ -120,8 +115,6 @@ router.get("/:id/edit", middleware.isGroupOwner, function(req, res) {
             }
             else {
                 res.render("groups/edit",{group:foundGroup});
-                // res.render("GUItest/edit", {group: foundGroup,user:foundUser});
-
             }
         });
     });
@@ -132,7 +125,7 @@ router.put("/:id", middleware.isGroupOwner, function(req, res) {
     // find and update the correct group
     var name = req.body.name;
 
-    var newGroup = {name: name};
+    var newGroup = {name: name,image:req.body.image};
 
     Group.findByIdAndUpdate(req.params.id, newGroup, function(err, updatedGroup) {
         // redirect to Groups page or page with specific id
@@ -142,7 +135,7 @@ router.put("/:id", middleware.isGroupOwner, function(req, res) {
             res.redirect("/groups");
         } else {
             req.flash("success","Your "+updatedGroup.name+" Updated Successfully..");
-            res.redirect("/groups/mygroups");
+            res.redirect("/groups/"+updatedGroup._id);
         }
     });
 }); //WORKED

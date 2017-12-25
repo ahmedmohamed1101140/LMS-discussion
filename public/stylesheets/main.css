@@ -13,3 +13,13 @@
 #delete-form {
     display: inline;
 }
+
+    footer {
+        background-color: darkgray;
+        position: absolute;
+        left: 0;
+        bottom: 100;
+        height: 20px;
+        width: 100%;
+        overflow:hidden;
+    }

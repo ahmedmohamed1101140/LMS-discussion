@@ -51,7 +51,7 @@ router.get("/profile",middleware.isLoggedIn,function (req, res) {
             console.log(err);
         }
         else {
-            res.render("GUItest/profile",{currentUser:founduser});
+            res.render("profile",{currentUser:founduser});
         }
     });
 });
@@ -61,7 +61,8 @@ router.post("/profile",middleware.isLoggedIn,function (req, res) {
     var user={
         firstname : req.body.firstname,
         lastname  : req.body.lastname,
-        email     : req.body.email
+        email     : req.body.email,
+        image     : req.body.image
     };
     User.findByIdAndUpdate(req.user._id,user,function(err,updatedUser){
         if(err){
