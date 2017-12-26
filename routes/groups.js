@@ -62,7 +62,7 @@ router.post("/", middleware.isAdmin, function (req, res) {
         userimage: req.user.image
     };
     // create a new Group and save it to the Database
-    var newGroup = {name: name, admin: admin,image:req.body.image };
+    var newGroup = {name: name, admin: admin };
     Group.create(newGroup,function (err,newlyCreated) {
         if(err){
             console.log(err);
