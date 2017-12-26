@@ -26,16 +26,16 @@
     <div class="row">
         <div class="col-md-9">
             <div class="card-group">
-                <%group.posts.forEach(function (post) {%>
-                <div class="row">
+            <%group.posts.forEach(function (post) {%>
+                <div class="row posts">
                     <div class="col-md-1">
-                        <img  src="<%= post.author.userimage%>" class="img-thumbnail" alt="Image" width="80" height="80" alt="Card image cap">
+                        <img src="<%= post.author.userimage%>" class="img-thumbnail" alt="Image" width="80" height="80" alt="Card image cap">
                     </div>
                     <div class="col-md-11">
                         <div class="thumbnail">
                             <div class="thumbnail-body" style="margin-left: 20px">
                                 <h4 class="thumbnail-title"><%=post.author.username%></h4>
-                                <p class="thumbnail-text"><%- post.content.substring(0,50)%>...</p>
+                                <p id="content" class="thumbnail-text"><%- post.content.substring(0,50)%>...</p>
                             </div>
 
                             <div class="thumbnail-footer" style="margin-left: 20px">
@@ -53,12 +53,13 @@
                         </div>
                     </div>
                 </div>
+                </li>
                 <% }); %>
             </div>
         </div>
         <div class="col-md-3">
             <div class="form-group">
-                <input class="form-control" type="text" name="search" placeholder="search...">
+                <input class="form-control" type="text" name="search" id="search" placeholder="search...">
             </div>
             <h3>Group Requests</h3>
             <ul class="list-group">
